@@ -17,6 +17,7 @@ ROOT_DIR = os.path.dirname(__file__)
 logger = logging.getLogger(__name__)
 # Target device of vLLM, supporting [cuda (by default), rocm, neuron, cpu]
 VLLM_TARGET_DEVICE = os.getenv("VLLM_TARGET_DEVICE", "cuda")
+torch.version.cuda = "12.1"
 
 # vLLM only supports Linux platform
 assert sys.platform.startswith(
@@ -405,7 +406,7 @@ setup(
                                     "tests")),
     python_requires=">=3.8",
     install_requires=get_requirements(),
-    ext_modules=ext_modules,
+    ext_modules=[],
     extras_require={
         "tensorizer": ["tensorizer==2.9.0a1"],
     },

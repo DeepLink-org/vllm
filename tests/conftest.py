@@ -3,6 +3,7 @@ import gc
 import os
 from typing import List, Optional, Tuple
 
+import deeplink_ext.patch_vllm
 import pytest
 import torch
 from PIL import Image

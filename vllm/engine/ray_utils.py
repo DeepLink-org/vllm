@@ -90,7 +90,7 @@ def initialize_ray_cluster(
         # Verify that we can use the placement group.
         gpu_bundles = 0
         for bundle in bundles:
-            bundle_gpus = bundle.get("GPU", 0)
+            bundle_gpus = bundle.get("NPU", 0)
             if bundle_gpus > 1:
                 raise ValueError(
                     "Placement group bundle cannot have more than 1 GPU.")
@@ -101,13 +101,13 @@ def initialize_ray_cluster(
                 "The number of required GPUs exceeds the total number of "
                 "available GPUs in the placement group.")
     else:
-        num_gpus_in_cluster = ray.cluster_resources().get("GPU", 0)
+        num_gpus_in_cluster = ray.cluster_resources().get("NPU", 0)
         if parallel_config.world_size > num_gpus_in_cluster:
             raise ValueError(
                 "The number of required GPUs exceeds the total number of "
                 "available GPUs in the cluster.")
         # Create a new placement group
-        placement_group_specs = ([{"GPU": 1}] * parallel_config.world_size)
+        placement_group_specs = ([{"NPU": 1}] * parallel_config.world_size)
         current_placement_group = ray.util.placement_group(
             placement_group_specs)
         # Wait until PG is ready - this will block until all

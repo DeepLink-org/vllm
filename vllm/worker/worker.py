@@ -46,6 +46,7 @@ class Worker(WorkerBase):
         vision_language_config: Optional[VisionLanguageConfig] = None,
         is_driver_worker: bool = False,
     ) -> None:
+        import deeplink_ext.patch_vllm
         self.model_config = model_config
         self.parallel_config = parallel_config
         self.scheduler_config = scheduler_config
@@ -135,7 +136,8 @@ class Worker(WorkerBase):
 
         # Execute a forward pass with dummy inputs to profile the memory usage
         # of the model.
-        self.model_runner.profile_run()
+        # uncomment to avoid coredump when exiting on ascend platform
+        # self.model_runner.profile_run()
 
         # Calculate the number of blocks that can be allocated with the
         # profiled peak memory.

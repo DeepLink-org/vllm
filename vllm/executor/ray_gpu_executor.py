@@ -70,7 +70,7 @@ class RayGPUExecutor(ExecutorBase):
             num_gpus = self.cache_config.gpu_memory_utilization
         else:
             # Otherwise, the ray workers are allocated with a full GPU.
-            num_gpus = 1
+            num_gpus = 0
 
         # The driver dummy worker does not actually use any resources.
         # It holds the resource for the driver worker.
@@ -85,8 +85,8 @@ class RayGPUExecutor(ExecutorBase):
         # Create the workers.
         driver_ip = get_ip()
         for bundle_id, bundle in enumerate(placement_group.bundle_specs):
-            if not bundle.get("GPU", 0):
-                continue
+            # if not bundle.get("GPU", 0):
+            #     continue
             scheduling_strategy = PlacementGroupSchedulingStrategy(
                 placement_group=placement_group,
                 placement_group_capture_child_tasks=True,
@@ -142,6 +142,7 @@ class RayGPUExecutor(ExecutorBase):
         all_args_to_update_environment_variables = [({
             "CUDA_VISIBLE_DEVICES":
             ",".join(map(str, node_gpus[node_id])),
+            "ASCEND_RT_VISIBLE_DEVICES": os.getenv("ASCEND_RT_VISIBLE_DEVICES"),
             "VLLM_INSTANCE_ID":
             VLLM_INSTANCE_ID,
             "VLLM_TRACE_FUNCTION":
